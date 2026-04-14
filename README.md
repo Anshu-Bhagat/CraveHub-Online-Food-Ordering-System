@@ -126,8 +126,8 @@ Contributions are welcome!
 ## 📞 Contact
 
 **Developer:** [GAGAN TIWARI , PRIYANSHU KUMAR , MAYANK KUMAR]
-**Email:** tgagan368@gmail.com
-**GitHub:** [https://github.com/tiwariGagans]
+**Email:** 7204anshu@gmail.com
+**GitHub:** [https://github.com/anshu-bhagat]
 
 ---
 

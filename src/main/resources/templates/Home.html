@@ -1,0 +1,153 @@
+<!doctype html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.com">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to CraveHub</title>
+    <link rel="icon" type="image/x-icon" href="./Images/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <link rel="stylesheet" href="" th:href="@{/css/Navigation.css}" />
+    <link rel="stylesheet" href="" th:href="@{css/Home.css}" />
+</head>
+
+<body>
+    <nav th:replace="~{Navigation::navbar()}"></nav>
+
+    <div class="hero-section">
+        <div class="overlay"></div>
+        <div class="content-container">
+            <h1 class="animate-text">✨ WELCOME TO <span class="highlight">CraveHub</span></h1>
+            <h3 class="animate-text delay-1">🍽️ Jahaan Taste Milta Hai Trust Se!</h3>
+            <p class="animate-text delay-2">
+                Explore karein hamara wide range of delicious dishes jo aapke meals ko banaye aur bhi special.
+                Fresh ingredients, behtareen swaad, aur superfast delivery.
+            </p>
+            <a href="/products" class="cta-button animate-text delay-3">Order Now <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <div class="chatbot-wrapper">
+        <button class="chat-btn" onclick="toggleChat()">
+            <i class="fa-solid fa-robot"></i>
+        </button>
+
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <div class="bot-info">
+                    <i class="fa-solid fa-robot"></i>
+                    <span>CraveHub Bot 🤖</span>
+                </div>
+                <button class="close-btn" onclick="toggleChat()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="chat-body" id="chatBody">
+                <div class="message bot-message">
+                    <p>Hi! Main CraveHub AI hoon. Aaj kya khana pasand karenge? 🍔</p>
+                </div>
+            </div>
+            <div class="chat-footer">
+                <input type="text" id="userInput" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="offer-ticker">
+        <div class="ticker-content">
+            🔥 FLAT 50% OFF on First Order  &nbsp;|&nbsp;  🚀 30 Mins Superfast Delivery  &nbsp;|&nbsp;  💳 No Cost EMI on Orders above ₹500  &nbsp;|&nbsp;  🍲 Fresh & Hygienic Food Guaranteed!
+        </div>
+    </footer>
+
+ <script>
+        function toggleChat() {
+            document.getElementById('chatWindow').classList.toggle('active');
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            // Message ko clean karo (trim) aur lowercase mein badlo
+            const message = input.value.trim().toLowerCase(); 
+            const chatBody = document.getElementById('chatBody');
+
+            if (message !== "") {
+                // User Message Add
+                const userDiv = document.createElement('div');
+                userDiv.className = 'message user-message';
+                userDiv.innerHTML = `<p>${input.value}</p>`;
+                chatBody.appendChild(userDiv);
+                
+                input.value = "";
+                chatBody.scrollTop = chatBody.scrollHeight;
+
+                // Bot Response
+                setTimeout(() => {
+                    const botDiv = document.createElement('div');
+                    botDiv.className = 'message bot-message';
+                    
+                    let reply = "Maaf kijiye, main samajh nahi paya. Aap menu se koi dish try karein! 😅";
+
+                    // --- 🔥 FIXED GREETINGS (Ab 'Chicken' ko 'Hi' nahi samjhega) ---
+                    // Sirf tab hello bolega agar message 'hi' se shuru ho ya exact 'hello' ho
+                    if (message === "hi" || message === "hello" || message === "hey" || 
+                        message.startsWith("hi ") || message.startsWith("hello ") || message.startsWith("hey ")) {
+                        reply = "Hello! FoodFrenzy mein swagat hai! Aaj kya khana pasand karenge? 😋";
+                    } 
+                    else if (message.includes("bye")) {
+                        reply = "Alvida! Phir milenge tasty khane ke saath! 👋";
+                    }
+                    else if (message.includes("thank")) {
+                        reply = "Welcome! Happy Eating! 🍔";
+                    }
+
+                    // --- Food Items Logic ---
+                    
+                    // 1. Biryani
+                    else if (message.includes("biryani")) {
+                        reply = "Biryani? 😍 Best choice! Hamari **Hyderabadi Chicken Biryani** world famous hai. Zaroor try karein!";
+                    }
+                    // 2. Paneer / Veg
+                    else if (message.includes("paneer") || message.includes("butter masala") || message.includes("shahi")) {
+                        reply = "Veg lovers ke liye **Paneer Butter Masala** aur **Paneer Do Pyaza** best hain! 🧀";
+                    }
+                    // 3. Chicken (Ab ye block sahi chalega)
+                    else if (message.includes("chicken") || message.includes("butter chicken") || message.includes("tikka")) {
+                        reply = "Chicken chahiye? **Butter Chicken** ya **Afgani Chicken** try karein. Ungliyan chaat te reh jayenge! 🍗";
+                    }
+                    // 4. Paratha / Roti
+                    else if (message.includes("paratha") || message.includes("roti") || message.includes("naan")) {
+                        reply = "Gravy ke saath **Laccha Paratha** ya **Butter Naan** perfect combination hai. 🍞";
+                    }
+                    // 5. Snacks / Starter
+                    else if (message.includes("starter") || message.includes("chilli") || message.includes("chowmein")) {
+                        reply = "Starter mein **Honey Chilli Potato** ya **Veg Chowmein** order karein. 🍟";
+                    }
+                    // 6. Sweet / Dessert
+                    else if (message.includes("sweet") || message.includes("meetha") || message.includes("gulab")) {
+                        reply = "Khane ke baad kuch meetha? Garam-garam **Gulab Jamun** best rahenge! 🍬";
+                    }
+                    // 7. Offers
+                    else if (message.includes("offer") || message.includes("discount") || message.includes("price")) {
+                        reply = "Abhi **FLAT 50% OFF** chal raha hai first order par! Jaldi order karein. 💸";
+                    }
+                    // 8. Delivery
+                    else if (message.includes("time") || message.includes("late") || message.includes("delivery")) {
+                        reply = "Chinta mat karein! Hum **30 Minutes** mein delivery ki guarantee dete hain. 🚀";
+                    }
+
+                    botDiv.innerHTML = `<p>${reply}</p>`;
+                    chatBody.appendChild(botDiv);
+                    chatBody.scrollTop = chatBody.scrollHeight;
+                }, 600); 
+            }
+        }
+    </script>
+</body>
+</html>

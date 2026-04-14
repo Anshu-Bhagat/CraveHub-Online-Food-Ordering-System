@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .card {
+            background: #1e1e1e;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(220, 20, 60, 0.3);
+            border: 1px solid crimson;
+        }
+        h1 { color: #39ff14; margin-bottom: 20px; } /* Neon Green Text */
+        p { font-size: 18px; margin-bottom: 30px; color: #ccc; }
+        .btn {
+            background-color: crimson;
+            color: white;
+            padding: 10px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn:hover { background-color: #ff2e63; }
+        .icon { font-size: 50px; color: #39ff14; margin-bottom: 20px; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="card">
+        <div class="icon"><i class="fa-solid fa-circle-check"></i></div>
+        <h1>Registration Successful!</h1>
+        <p>Welcome to CravHub. Your account has been created.</p>
+        <a href="/login" class="btn">Login Now</a>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.com">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Buy Product</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="" />
+</head>
+<style>
+    body {
+        background-image: url("https://images.pexels.com/photos/7219747/pexels-photo-7219747.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+        background-size: cover;
+        background-attachment: fixed; /* Parallax effect */
+        color: white;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* --- Voice Search Styles --- */
+    .search-container {
+        margin-top: 20px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .searchInput input {
+        padding: 15px;
+        width: 300px;
+        border-radius: 25px;
+        border: none;
+        outline: none;
+        padding-right: 50px; /* Space for mic icon */
+        font-size: 16px;
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+    .mic-btn {
+        position: absolute;
+        right: 110px; /* Adjust based on button position */
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 20px;
+        color: #4285F4; /* Google Blue */
+        transition: transform 0.2s;
+    }
+
+    .mic-btn:hover {
+        transform: translateY(-50%) scale(1.2);
+    }
+
+    .mic-active {
+        color: red !important;
+        animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: translateY(-50%) scale(1); }
+        50% { transform: translateY(-50%) scale(1.2); }
+        100% { transform: translateY(-50%) scale(1); }
+    }
+
+    .search-btn {
+        padding: 15px 25px;
+        border-radius: 25px;
+        border: none;
+        background-color: crimson;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+
+    /* --- Table & Layout Styles --- */
+    .details {
+        margin-top: 50px;
+        background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+        padding: 20px;
+        border-radius: 10px;
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .details input, .details button {
+        display: block;
+        padding: 5px;
+        font-size: 16px;
+    }
+
+    .back-btn {
+        border: 1px solid white;
+        background-color: rgba(0,0,0,0.5);
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        border-radius: 5px;
+    }
+
+    .details th {
+        background-color: #333;
+        padding: 15px;
+        color: gold;
+    }
+
+    td {
+        text-align: center;
+        padding: 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .welcome {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 24px;
+        text-shadow: 2px 2px 4px #000000;
+    }
+</style>
+
+<body>
+    <div class="welcome">
+        Welcome Back <span style="color: yellow; font-weight: bold;" th:text="${name}"></span>
+    </div>
+    
+    <a href="/login" class="back-btn">Logout</a>
+
+    <center>
+        <div class="search-container">
+            <form action="/product/search" method="post" class="searchInput" id="searchForm">
+                <input type="text" name="productName" id="searchBox" placeholder="Speak or type (e.g. 'Chicken')..." autocomplete="off">
+                
+                <button type="button" class="mic-btn" onclick="startVoiceSearch()" title="Search by Voice">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+
+                <button type="submit" class="search-btn">Search</button>
+            </form>
+        </div>
+        
+        <h3 style="color:orange; text-align:center; margin-top: 20px;" th:if="${msg}" th:text="${msg}"></h3>
+
+        <div th:if="${products}" class="details">
+            <h2 style="text-align:center; color:#00ffcc; text-transform: uppercase; letter-spacing: 2px;">Available Products</h2>
+            
+            <form action="" th:action="@{/product/orderAll}" method="post">
+                
+                <div th:each="p, stat : ${products}" 
+                     style="border-bottom:1px solid #555; padding:15px; display: flex; justify-content: space-between; align-items: center;">
+                    
+                    <div style="text-align: left;">
+                        <strong style="color:#ffcc00; font-size:20px;" th:text="${p.pname}"></strong>
+                        <br>
+                        <span style="color:#ccc;">Price: </span> 
+                        <span style="color:white; font-weight:bold;">₹<span th:text="${p.pprice}"></span></span>
+                    </div>
+
+                    <input type="hidden" th:name="|orders[${stat.index}].oName|" th:value="${p.pname}" />
+                    <input type="hidden" th:name="|orders[${stat.index}].oPrice|" th:value="${p.pprice}" />
+
+                    <div style="display: flex; align-items: center;">
+                        <label style="margin-right: 10px;">Qty:</label>
+                        <input type="number" 
+                               th:name="|orders[${stat.index}].oQuantity|" 
+                               placeholder="0" min="0" 
+                               style="width:60px; padding:5px; text-align: center; border-radius: 5px; border: none;" />
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button type="submit" 
+                            style="padding: 12px 40px; font-size: 18px; background: linear-gradient(45deg, #11998e, #38ef7d); color: white; border: none; border-radius: 30px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,255,128,0.4); transition: transform 0.2s;">
+                        <i class="fa-solid fa-cart-shopping"></i> ORDER SELECTED ITEMS
+                    </button>
+                </div>
+
+            </form>
+        </div>
+        
+        <div th:if="${orders!=null}" class="details" style="margin-top: 50px;">
+            <h2 style="color: #00ffcc;">Your Order History</h2>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td th:text="${order.oName}"></td>
+                        <td th:text="${order.oPrice}"></td>
+                        <td th:text="${order.oQuantity}"></td>
+                        <td th:text="${order.totalAmmout}" style="color: #38ef7d; font-weight: bold;"></td>
+                        <td th:text="${order.orderDate}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </center>
+
+    <script>
+        function startVoiceSearch() {
+            // Check browser support
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                var recognition = new SpeechRecognition();
+                
+                recognition.lang = 'en-US'; // English (US)
+                recognition.interimResults = false; // Final result only
+                recognition.maxAlternatives = 1;
+
+                // Visual Feedback (Mic turns red)
+                var micBtn = document.querySelector('.mic-btn');
+                micBtn.classList.add('mic-active');
+
+                recognition.start();
+
+                recognition.onresult = function(event) {
+                    var transcript = event.results[0][0].transcript;
+                    
+                    // Remove ending dot if present
+                    if(transcript.endsWith('.')) {
+                        transcript = transcript.slice(0, -1);
+                    }
+
+                    console.log("User said: " + transcript);
+                    
+                    // Fill input and submit
+                    document.getElementById('searchBox').value = transcript;
+                    micBtn.classList.remove('mic-active');
+                    document.getElementById('searchForm').submit();
+                };
+
+                recognition.onspeechend = function() {
+                    recognition.stop();
+                    micBtn.classList.remove('mic-active');
+                };
+
+                recognition.onerror = function(event) {
+                    console.error("Voice error: " + event.error);
+                    micBtn.classList.remove('mic-active');
+                    alert("Could not hear you. Please try again.");
+                };
+            } else {
+                alert("Sorry! Your browser does not support Voice Search. Try Chrome.");
+            }
+        }
+    </script>
+</body>
+
+</html>
